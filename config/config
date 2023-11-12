@@ -22,7 +22,7 @@
 #PPPD_SHUTDOWN_TIMEOUT=60
 
 #
-# Thei filename of the peer configuration from /etc/ppp/peers.
+# The filename of the peer configuration from /etc/ppp/peers.
 #
 #PPPD_PEER=dsl-provider
 
