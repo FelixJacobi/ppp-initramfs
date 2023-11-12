@@ -1,8 +1,8 @@
-ppp-initramfs (20231113-2) UNRELEASED; urgency=medium
+ppp-initramfs (20231113-2) unstable; urgency=medium
 
   * Added README to package 
 
- -- Felix Jacobi <Felix@jacobi-hamburg.net>  Mon, 13 Nov 2023 00:45:19 +0100
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Mon, 13 Nov 2023 00:46:16 +0100
 
 ppp-initramfs (20231113-1) unstable; urgency=medium
 
