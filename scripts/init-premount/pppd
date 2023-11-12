@@ -1,0 +1,47 @@
+#!/bin/sh
+
+PREREQ="udev pppd"
+
+prereqs() {
+    echo "$PREREQ"
+}
+
+case "$1" in
+    prereqs)
+        prereqs
+        exit 0
+    ;;
+esac
+
+[ "$IP" != off -a "$IP" != none -a -x /usr/sbin/pppd ] || exit 0
+
+if [ -e /etc/ppp-initramfs/config ]; then
+    . /etc/ppp-initramfs/config
+fi
+. /scripts/functions
+
+[ "$PPPD_IFACE" -a "$PPPD_PEER" ] || exit 0
+
+run_pppd() {
+    # always run configure_networking() before pppd(8); on NFS
+    # mounts this has been done already
+    [ "$BOOT" = nfs ] || configure_networking
+
+    log_begin_msg "Starting pppd"
+    modprobe pppoe ||:
+    ip link set up dev "${PPPD_IFACE}"
+    # using exec and keeping pppd in the foreground enables the
+    # init-bottom script to kill the remaining ipconfig processes if
+    # someone unlocks the rootfs from the console while the network is
+    # being configured
+    exec /usr/sbin/pppd call "${PPPD_PEER}"
+}
+
+# On NFS mounts, wait until the network is configured.  On local mounts,
+# configure the network in the background (in run_pppd()) so someone
+# with console access can enter the passphrase immediately.  (With the
+# default ip=dhcp, configure_networking hangs for 5mins or so when the
+# network is unavailable, for instance.)
+[ "$BOOT" != nfs ] || configure_networking
+
+run_pppd &

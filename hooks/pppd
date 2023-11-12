@@ -1,0 +1,67 @@
+#!/bin/sh
+
+PREREQ=""
+
+prereqs() {
+    echo "$PREREQ"
+}
+
+case "$1" in
+    prereqs)
+        prereqs
+        exit 0
+    ;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+if [ -e "/etc/ppp-initramfs/config" ]
+then
+  . /etc/ppp-initramfs/config
+fi
+
+PPPD_VERSION="$(pppd -h 2>&1 | grep -oE 'version [0-9]+\.[0-9]+\.[0-9]+' | awk '{ print $2 }')"
+
+copy_exec /usr/sbin/pppd
+copy_exec "/usr/lib/pppd/${PPPD_VERSION}/rp-pppoe.so"
+
+mkdir -p "${DESTDIR}/etc/ppp"
+cp -a /etc/ppp/options "${DESTDIR}/etc/ppp/options"
+cp -a /etc/ppp/chap-secrets "${DESTDIR}/etc/ppp/chap-secrets"
+cp -a /etc/ppp/pap-secrets "${DESTDIR}/etc/ppp/pap-secrets"
+mkdir -p "${DESTDIR}/etc/ppp/peers"
+
+if [ "${PPPD_PEER}" ] && ! [ -e "/etc/ppp/peers/${PPPD_PEER}" ]
+then
+  echo "/etc/ppp/peers/${PPPD_PEER} does not exists." >&2
+  exit 1
+fi
+
+if [ "${PPPD_PEER}" ]
+then
+  cp -a "/etc/ppp/peers/${PPPD_PEER}" "${DESTDIR}/etc/ppp/peers/${PPPD_PEER}"
+  if [ "${PPPD_IFACE}" ]
+  then
+    sed -i -E 's/^plugin rp-pppoe\.so .+$/plugin rp-pppoe.so '"${PPPD_IFACE}"'/g' "${DESTDIR}/etc/ppp/peers/${PPPD_PEER}"
+  fi
+fi
+
+if [ -e "/etc/ppp-initramfs/config" ]
+then
+  mkdir -p "${DESTDIR}/etc/ppp-initramfs"
+  cp -a /etc/ppp-initramfs/config "${DESTDIR}/etc/ppp-initramfs/config"
+fi
+
+for HOOK in ip-up ip-down ipv6-up ipv6-down
+do
+  if [ -e "/etc/ppp/${HOOK}" ]
+  then
+    cp -a "/etc/ppp/${HOOK}" "${DESTDIR}/etc/ppp/${HOOK}"
+  fi
+  mkdir -p "${DESTDIR}/etc/ppp/${HOOK}.d"
+  if [ -e "/etc/ppp/${HOOK}.d/0000usepeerdns" ]
+  then
+    cp -a "/etc/ppp/${HOOK}.d/0000usepeerdns" "${DESTDIR}/etc/ppp/${HOOK}.d/0000usepeerdns"
+    sed -i 's/ --invert-match / -v /g' "${DESTDIR}/etc/ppp/${HOOK}.d/0000usepeerdns"
+    sed -i 's/ --canonicalize / -f /g' "${DESTDIR}/etc/ppp/${HOOK}.d/0000usepeerdns"
+  fi
+done
