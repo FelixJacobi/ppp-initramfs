@@ -14,3 +14,4 @@ an SSH connection via Dropbear.
 
    * Set `PPPD_PEER` to a existing peer configuration from `/etc/ppp/peers`.
    * Set `PPPD_IFACE` to the network interface connected to the DSL modem.
+4. Run `initramfs-tools -k all -u`

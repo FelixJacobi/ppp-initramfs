@@ -1,4 +1,5 @@
 config/*    	etc/ppp-initramfs
 scripts/* 	usr/share/initramfs-tools/scripts
 hooks/*   	usr/share/initramfs-tools/hooks
+README.md	usr/share/doc/${env:FULLPKG}
 I:.
