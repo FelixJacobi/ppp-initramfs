@@ -1,0 +1,6 @@
+debian/ppp-initramfs/*
+debian/ppp-initramfs.substvars
+debian/ppp-initramfs.debhelper.log
+debian/files
+debian/debhelper-build-stamp
+debian/*.debhelper

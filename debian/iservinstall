@@ -1,0 +1,4 @@
+conf/*    	etc/ppp-initramfs
+scripts/* 	usr/share/initramfs-tools/scripts
+hooks/*   	usr/share/initramfs-tools/hooks
+I:.

@@ -1,0 +1,23 @@
+Source: ppp-initramfs
+Section: misc
+Priority: optional
+Maintainer: Stadtteilschule Blankenese <repository@stsbl.de>
+Build-Depends: debhelper-compat (= 13),
+  dh-sequence-iserv,
+  dh-sequence-stsbl,
+Standards-Version: 4.6.2
+Homepage: https://github.com/FelixJacobi/ppp-initramfs
+Rules-Requires-Root: no
+
+Package: ppp-initramfs
+Architecture: all
+Depends: ${misc:Depends},
+  ${perl:Depends},
+  initramfs-tools,
+  ppp,
+Description: initramfs-tools integration for PPPD(8)
+ This package runs pppd inside of initramfs when booting.
+ .
+ This is particularly useful, for example, to unlock the LUKS-encrypted root
+ partition on a remote host that is connected to the Internet via DSL using an
+ SSH connection via Dropbear.
