@@ -1,7 +1,7 @@
 Source: ppp-initramfs
 Section: misc
 Priority: optional
-Maintainer: Stadtteilschule Blankenese <repository@stsbl.de>
+Maintainer: Felix Jacobi <Felix@jacobi-hamburg.net>
 Build-Depends: debhelper-compat (= 13),
   dh-sequence-iserv,
   dh-sequence-stsbl,
